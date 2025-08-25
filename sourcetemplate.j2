@@ -1,0 +1,24 @@
+{{ ansible_managed }}
+
+This Is My First Jinja2 Template
+
+The Linux Distro for this host is {{ ansible_facts['distribution'] }}
+
+Default IPv4: {{ ansible_facts['default_ipv4']['address'] | default('N/A') }}
+
+IPv4 for enp0s8: {{ ansible_facts['ansible_enp0s8']['ipv4']['address'] | default('N/A') }}
+
+playbook variable = {{ playbook_variable }}
+
+Free memory: {{ ansible_facts['memfree_mb'] | default('N/A') }}
+{% if ansible_facts['memfree_mb'] | default(0) > 1490 %}
+System is IDLE and has enough memory
+{% else %}
+System is Busy
+{% endif %}
+
+IP                  hostname
+{% for host in groups['all'] %}
+{{ hostvars[host]['ansible_facts']['ansible_enp0s8']['ipv4']['address'] | default('N/A') }}  {{ hostvars[host]['ansible_hostname'] | default('unknown') }}
+{% endfor %}
+

@@ -1,0 +1,19 @@
+---
+# tasks file for myfirstrole
+
+- name: installing httpd 
+  yum: 
+    name: httpd
+    state: present 
+- name: staring and Enabling the service 
+  service: 
+    name: httpd 
+    state: started
+    enabled: yes
+- name: placing index.html under /var/www/html in remot hosts 
+  template: 
+    src: index.j2 
+    dest: /var/www/html/index.html
+  notify: 
+    - restart_httpd 
+

@@ -1,0 +1,6 @@
+---
+- name : play to import task  
+  hosts: all 
+  tasks:
+    - name: importing a task 
+      import_tasks: simpletask.yml

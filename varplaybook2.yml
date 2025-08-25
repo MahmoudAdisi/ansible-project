@@ -1,0 +1,15 @@
+---
+- name: first play to create a user
+  hosts: all
+  vars:
+    sarah: 
+      name: sarah
+      group: admin 
+      uid:  2050
+  tasks:
+    - name: creating user {{ sarah['name'] }}
+      user:
+        name: "{{sarah['name'] }}"
+        group: "{{sarah['group']}}"
+        uid:  "{{sarah['uid']}}"
+        state: present

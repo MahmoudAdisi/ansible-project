@@ -1,0 +1,3 @@
+---
+- name : simple task with debug
+  debug: msg="A simple debug task to be included or imported" 

@@ -1,0 +1,10 @@
+---
+- name: first play to creat a user
+  hosts: all
+  tasks: 
+    - name: creating new file 
+      file:
+        path: /home/admin/filbyplaybook
+        state: touch 
+        owner: admin 
+        mode : 666

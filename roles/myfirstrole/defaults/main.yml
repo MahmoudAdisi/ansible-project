@@ -1,0 +1,4 @@
+---
+# defaults file for myfirstrole
+role_variable: "this is the default value"
+

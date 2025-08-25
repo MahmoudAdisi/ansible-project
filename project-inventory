@@ -1,0 +1,2 @@
+node4 ansible_host=51.0.6.4 ansible_user=admin
+node5 ansible_host=51.0.6.5 ansible_user=admin

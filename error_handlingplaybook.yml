@@ -1,0 +1,23 @@
+---
+- name: play to oractice error hanling 
+  hosts: all
+  force_handlers: yes
+  vars:
+    echo_string: ok 
+  tasks: 
+    - name: determining when output fails and changes 
+      shell: "echo {{echo_string}}"
+      register: shell_output 
+      ignore_errors: yes
+      changed_when: "'changed' in shell_output.stdout"
+      failed_when: "'failed' in shell_output.stdout"
+      notify: handling second task
+    - name: instaling wrong package 
+      yum: 
+        name: wrongPackage
+        state: latest
+  handlers:
+    - name: handling second task
+      debug: 
+        msg: "handling 2nd Task"
+

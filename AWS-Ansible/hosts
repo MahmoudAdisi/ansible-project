@@ -1,0 +1,11 @@
+[all]
+
+[ec2]
+ec2-user@54.158.0.210
+ec2-user@50.19.17.108
+
+
+[admin]
+node4 ansible_host=51.0.6.4 ansible_user=admin
+node5 ansible_host=51.0.6.5 ansible_user=admin
+

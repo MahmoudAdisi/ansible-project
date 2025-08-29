@@ -1,0 +1,31 @@
+---
+- name: Dealing with Subnets inside VPC
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Gather information about a particular VPC subnet using subnet ID
+      amazon.aws.ec2_vpc_subnet_info:
+        subnet_ids: subnet-02c143005eae96f8d
+      register: subnet_info
+    - debug: var=subnet_info
+
+    - name: Gather information about subnet with a tag key Name and value Example
+      amazon.aws.ec2_vpc_subnet_info:
+        filters:
+          "tag:Name": production_subnet
+      register: subnet_tag
+    - debug: var=subnet_tag
+
+    - name: list all subnets IDs inside a specific VPC
+      amazon.aws.ec2_vpc_subnet_info:
+        filters:
+          vpc-id: vpc-0888150269988cde1
+      register: all_subnets
+    - debug: var=all_subnets
+
+    - name: delete a subnet inside a VPC
+      amazon.aws.ec2_vpc_subnet:
+        state: absent
+        vpc_id: vpc-0888150269988cde1
+        cidr: 10.10.0.0/16
+

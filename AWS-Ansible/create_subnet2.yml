@@ -1,0 +1,22 @@
+---
+- name: Dealing with Subnets inside VPC
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Create 3 subnets inside an existing VPC
+      amazon.aws.ec2_vpc_subnet:
+        state: present
+        vpc_id: vpc-0790e46efad3b3b58
+        cidr: "{{ item.cidr }}"
+        tags:
+          Name: "{{ item.name }}"
+      loop:
+        - { cidr: "172.31.32.0/20", name: "production_subnet_1" }
+        - { cidr: "172.31.48.0/20", name: "production_subnet_2" }
+        - { cidr: "172.31.64.0/20", name: "production_subnet_3" }
+      register: out_subnets
+
+    - debug:
+        msg: "Created subnet with ID {{ item.subnet.id }}"
+      loop: "{{ out_subnets.results }}"
+

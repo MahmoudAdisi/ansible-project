@@ -1,0 +1,19 @@
+---
+- name: create Ec2 Instances
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: creating new EC2 Instances
+      amazon.aws.ec2_instance:
+        profile: Ansible-new
+        region: us-east-1
+        key_name: Ansible-Key
+        instance_type: t2.micro
+        image_id: ami-00ca32bbc84273381
+        security_group: default
+        count: 2
+        vpc_subnet_id: subnet-023e97ae9a2ed155e
+        network:
+          assign_public_ip: true
+        tags:
+          Name: Adisi

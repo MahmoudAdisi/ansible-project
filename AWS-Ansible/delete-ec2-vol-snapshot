@@ -1,0 +1,54 @@
+---
+- name: Delete all Snapshots in my account and using some filters
+  hosts: localhost
+  tasks:
+    - name: first , list all my snapshots in my account
+      amazon.aws.ec2_snapshot_info:
+        filters:
+          owner-id: 076095051755
+        region: us-east-1
+      register: snapshots
+
+    - debug:
+        msg: "Found {{ snapshots.snapshots | length }} snapshots"
+
+    - name: Remove all snapshots in my account
+      amazon.aws.ec2_snapshot:
+        snapshot_id: "{{ item.snapshot_id }}"
+        state: absent
+        region: us-east-1
+      loop: "{{ snapshots.snapshots }}"
+      when: snapshots.snapshots | length > 0
+
+
+    - name: List all my EC2 instances
+      amazon.aws.ec2_instance_info:
+        region: us-east-1
+      register: ec2_instances
+
+    - debug:
+        msg: "Found {{ ec2_instances.instances | length }} EC2 instances"
+
+    - name: Terminate all EC2 instances
+      amazon.aws.ec2_instance:
+        instance_ids: "{{ item.instance_id }}"
+        state: absent
+        wait: yes
+        region: us-east-1
+      loop: "{{ ec2_instances.instances }}"
+
+    - name: List all my EBS volumes
+      amazon.aws.ec2_vol_info:
+        region: us-east-1
+      register: volumes
+
+    - debug:
+        msg: "Found {{ volumes.volumes | length }} EBS volumes"
+
+    - name: Delete all EBS volumes
+      amazon.aws.ec2_vol:
+        id: "{{ item.id }}"
+        state: absent
+        region: us-east-1
+      loop: "{{ volumes.volumes }}"
+

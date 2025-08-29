@@ -1,0 +1,20 @@
+---
+- name: Creating new volume and taking a snapshot from it
+  hosts: localhost
+  tasks:
+    - name: create a new volume from an existing EC2 Instance then create a snapshot to it
+      amazon.aws.ec2_vol:
+        instance: i-0891eae7f686bc7d5
+        volume_size: 10
+        device_name: /dev/sdf
+        region: us-east-1
+        delete_on_termination: yes
+      register: volume
+    - debug: var=volume.volume_id
+
+    - name: taking Snapshot of the newly created volume
+      amazon.aws.ec2_snapshot:
+        volume_id: "{{ volume.volume_id}}"
+        description: snapshot of Data volume - 1st Full backup
+      register: snapshot
+    - debug: var=snapshot.snapshot_id

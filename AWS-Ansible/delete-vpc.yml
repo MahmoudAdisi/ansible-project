@@ -1,0 +1,17 @@
+---
+  - name: Delete a VPC with a Tag Value
+    hosts: localhost
+    gather_facts: no
+    tasks:
+    - name: Capture the VPC_ID of particular VPC using its Tag
+      amazon.aws.ec2_vpc_net_info:
+        filters:
+          "tag:Name": Adisi_VPC
+      register: tag_vpc
+
+    - name: Delete the VPC after getting its id
+      amazon.aws.ec2_vpc_net:
+        name: "{{tag_vpc.vpcs[0].tags.Name}}"
+        cidr_block: "{{tag_vpc.vpcs[0].cidr_block}}"
+        region: us-east-1
+        state: absent

@@ -1,0 +1,26 @@
+---
+- name: Dealing with EC2 Snapshots
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name : Simple snapshot of volume using existing volume_id
+      amazon.aws.ec2_snapshot:
+        volume_id: vol-0a18f05fcb3b497a6
+        description: snapshot of Data volume - 1st Full backup
+      register: snapshot
+    - debug: var=snapshot.snapshot_id
+
+    - name: Snapshot of root_volume mounted on instance_id
+      amazon.aws.ec2_snapshot:
+        instance_id: i-031f75a3bf4e988b1
+        device_name: /dev/xvda
+        description: snapshot of Instance root_volume
+      register: snapshot2
+    - debug: var=snapshot2.snapshot_id
+
+    - name: Create a snapshot only if the most recent one is older than 1 hour
+      amazon.aws.ec2_snapshot:
+        volume_id: vol-050def68c861185ae
+        last_snapshot_min_age: 60
+      register: snapshot3
+    - debug: var=snapshot3.snapshot_id

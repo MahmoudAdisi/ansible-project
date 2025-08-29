@@ -1,0 +1,22 @@
+---
+- name: Provision Ec2 Instances
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Stop Ec2 Instance with tag
+      amazon.aws.ec2_instance:
+        ec2_region: us-east-1
+        instance_type: t2.micro
+        image_id: ami-00ca32bbc84273381
+        filters:
+          "tag:Name": "Adisi"
+        state: stopped
+
+    - name: start Ec2 Instance with tag
+      amazon.aws.ec2_instance:
+        ec2_region: us-east-1
+        instance_type: t2.micro
+        image_id: ami-00ca32bbc84273381
+        filters:
+          "tag:Name": "new-Adisi"
+        state: started

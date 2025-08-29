@@ -1,0 +1,43 @@
+---
+- name: dealing with EC2/EBS volumes
+  hosts: localhost
+  tasks:
+    - name: attach a volume to an existing EC2 Instance
+      amazon.aws.ec2_vol:
+        instance: i-0fd1bd0666cc4e7f0
+        volume_size: 10
+        device_name: /dev/sdf
+        region: us-east-1
+        delete_on_termination: yes
+
+    - name: launch a new instance and attach a volume to it
+      amazon.aws.ec2_instance:
+          region: us-east-1
+          key_name: Ansible
+          image_id: ami-00ca32bbc84273381
+          instance_type: t2.micro
+          wait: yes
+          wait_timeout: 1000
+          count: 1
+          tags:
+            Name: Ansible123
+      register: ec2
+
+    - name: check the status of the created instance
+      amazon.aws.ec2_instance_info:
+        region: us-east-1
+        filters:
+          "tag:Name": Ansible123
+      register: state
+      until: state.instances[0].state.name=="running"
+      retries: 10
+      delay: 30
+
+    - name: attach the new volume to the created instance
+      amazon.aws.ec2_vol:
+        instance: "{{ item }}"
+        volume_size: 15
+        region: us-east-1
+      loop: "{{ ec2.instance_ids }}"
+      register: ec2_vol
+

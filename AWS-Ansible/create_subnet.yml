@@ -1,0 +1,42 @@
+---
+- name: Dealing with Subnets inside VPC
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Create new subnet inside an existing VPC
+      amazon.aws.ec2_vpc_subnet:
+        state: present
+        vpc_id: vpc-0790e46efad3b3b58
+        cidr: 172.31.32.0/20
+        tags:
+          Name: production_subnet
+      register: out1
+    - debug: var=out1.subnet.id
+
+    - name: Create a new VPC and add a new subnet in that VPC
+      amazon.aws.ec2_vpc_net:
+        name: Adisi_VPC
+        cidr_block: 10.10.0.0/16
+        region: us-east-1
+        state: present
+      register: out2
+    - debug: var=out2.vpc.id
+
+    - name: Create a new subnet and add it to the newly created VPC
+      amazon.aws.ec2_vpc_subnet:
+        state: present
+        vpc_id: "{{ out2.vpc.id }}"
+        cidr: 10.10.3.0/24
+        tags:
+          Name: Public Subnet
+      register: out3
+    - debug: var=out3.subnet.id
+
+    - name: Get all subnets IDs inside a region
+      amazon.aws.ec2_vpc_subnet_info:
+        region: us-east-1
+      register: out4
+    - debug:
+        msg: " the subnet_id is {{ item.0.id }}"
+      with_together:
+        - "{{ out4.subnets }}"

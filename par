@@ -1,0 +1,20 @@
+---
+- name: second play to practice error handling (block)
+  hosts: all
+  tasks: 
+    - name: installing httpd and starting the service 
+      block:
+        - name: installing wrong packege 
+          yum: 
+            name: wrongpackage
+            state: latest 
+      rescue:  
+        - name: installing httpd package 
+          yum:
+            name: httpd 
+            state: latest
+      always:
+        - name: starting the service 
+          service: 
+            name: httpd 
+            state: started 

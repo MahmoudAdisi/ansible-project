@@ -1,0 +1,12 @@
+---
+- name: Dealing with Security Groups inside AWS
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Delete a security group using its group id
+      amazon.aws.ec2_group:
+        region: us-east-1
+        group_id: sg-0db4b188d9397072f
+        state: absent
+      register: output6
+    - debug: var=output6

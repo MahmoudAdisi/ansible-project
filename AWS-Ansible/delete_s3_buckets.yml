@@ -1,0 +1,13 @@
+---
+  - name: Deleting S3 Buckets inside AWS
+    hosts: localhost
+    gather_facts: no
+    vars:
+      buckets: [ "adisibucket123456","adisibucket456789" ]
+    tasks:
+      - name: Remove the above created S3 buckets and any keys it contains
+        amazon.aws.s3_bucket:
+          name: "{{item}}"
+          state: absent
+          force: yes
+        loop: "{{ buckets }}"

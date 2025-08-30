@@ -1,0 +1,28 @@
+---
+- name: Delete a route table safely
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Get the route table info
+      amazon.aws.ec2_vpc_route_table_info:
+        region: us-east-1
+        filters:
+          route-table-id: rtb-087cb059da0b154ad
+      register: rt_info
+
+    - name: Disassociate all associated subnets
+      amazon.aws.ec2_vpc_route_table:
+        state: absent
+        region: us-east-1
+        route_table_id: rtb-087cb059da0b154ad
+        association_id: "{{ item.association_id }}"
+      loop: "{{ rt_info.route_tables[0].associations }}"
+      when: item.subnet_id is defined
+
+    - name: Delete the route table
+      amazon.aws.ec2_vpc_route_table:
+        vpc_id: vpc-0790e46efad3b3b58
+        route_table_id: rtb-087cb059da0b154ad
+        state: absent
+        region: us-east-1
+

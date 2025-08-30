@@ -1,0 +1,27 @@
+---
+- name: Add route table inside a VPC and associate subnets to it
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Collect all subnets_IDs inside a VPC
+      amazon.aws.ec2_vpc_subnet_info:
+        region: us-east-1
+        filters:
+          vpc-id: vpc-0790e46efad3b3b58
+      register: output
+    - debug: var=output
+
+    - name: Add the route table and attach the first and second subnets to it
+      amazon.aws.ec2_vpc_route_table:
+        vpc_id: vpc-0790e46efad3b3b58
+        region: us-east-1
+        tags:
+          Name: Public123
+        subnets:
+         - "{{ output.subnets[0].id }}"
+         - "{{ output.subnets[1].id }}"
+        routes:
+          - dest: 0.0.0.0/0
+            gateway_id: igw-01fb7dd871af0fa6f
+      register: public_route_table
+    - debug: var=public_route_table.route_table.id

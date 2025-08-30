@@ -1,0 +1,24 @@
+---
+- name: Dealing with S3 Buckets inside AWS
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Create a simple S3 bucket
+      amazon.aws.s3_bucket:
+        name: adisibucket123456
+        state: present
+        tags:
+          Name: adisi_ansible
+      register: output
+    - debug: var=output
+
+    - name: Create a bucket with public policy block configuration
+      amazon.aws.s3_bucket:
+        region: us-east-1
+        name: adisibucket456789
+        state: present
+        public_access:
+            block_public_acls: true
+            ignore_public_acls: true
+      register: output2
+    - debug: var=output2

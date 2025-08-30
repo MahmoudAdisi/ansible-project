@@ -1,0 +1,35 @@
+---
+- name: Dealing with S3 objects
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Ensure the S3 bucket exists
+      amazon.aws.s3_bucket:
+        name: adisibucket123456
+        state: present
+        region: us-east-1
+
+    - name: Simple PUT for a new object
+      amazon.aws.s3_object:
+        bucket: adisibucket123456
+        object: ansible.cfg
+        src: /home/Ansible/ansible-project/AWS-Ansible/ansible.cfg
+        mode: put
+      register: output
+
+    - debug:
+        var: output
+
+    - name: Simple GET operation for an object and put it on my desktop
+      amazon.aws.aws_s3:
+        bucket: adisibucket123456
+        object: ansible.cfg
+        dest: /home/Ansible/ansible-project/AWS-Ansible/putS3/ansible.cfg
+        mode: get
+      register: output2
+    - debug: var=output2.s3_keys
+
+    - name: List all my objects inside a specific bucket
+      amazon.aws.aws_s3:
+        bucket: adisibucket123456
+        mode: list

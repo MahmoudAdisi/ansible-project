@@ -1,0 +1,15 @@
+---
+- name: Dealing with IAM Users inside AWS
+  hosts: localhost
+  gather_facts: no
+  tasks:    
+    - name: Delete a user after de_attach any policy from it
+      community.aws.iam_user:
+        name: "{{ item }}"
+        purge_policies: true
+        state: absent
+      loop:
+        - ansible_user1
+        - ansible_user2
+        - ansible_user3
+        - ansible_user4

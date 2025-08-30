@@ -1,0 +1,16 @@
+---
+- name: Dealing with S3 objects
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: Delete an object from a bucket
+      amazon.aws.aws_s3:
+        bucket: adisibucket123456
+        object: ansible.cfg
+        mode: delobj
+
+    - name: Ensure bucket is absent
+      amazon.aws.s3_bucket:
+        name: adisibucket123456
+        state: absent
+
